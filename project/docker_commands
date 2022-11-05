@@ -1,11 +1,37 @@
 ## Docker commands used to build the application 
-# TODO: insert the docker build command
+docker build -t techtrends:latest .
 
 ## Docker commands used to run the application
-# TODO: insert the docker run command
+docker run -d -p 7111:3111 techtrends:latest
 
 ## Docker commands used to get the application logs
-# TODO: insert the docker logs command
+docker logs nostalgic_cori
 
 ## Logs from the container running the TechTrends application
-# TODO: paste logs from the Docker container 
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://172.17.0.2:3111/ (Press CTRL+C to quit)
+172.17.0.1 - - [05/Nov/2022 10:52:11] "GET / HTTP/1.1" 200 -
+172.17.0.1 - - [05/Nov/2022 10:52:11] "GET /static/css/main.css HTTP/1.1" 304 -
+[2022-11-05 10:52:12,807] INFO in app: Article "2020 CNCF Annual Report" retrieved!
+172.17.0.1 - - [05/Nov/2022 10:52:12] "GET /1 HTTP/1.1" 200 -
+172.17.0.1 - - [05/Nov/2022 10:52:12] "GET /static/css/main.css HTTP/1.1" 304 -
+[2022-11-05 10:52:16,939] INFO in app: Article "Kubernetes v1.20 Release Notes" retrieved!
+172.17.0.1 - - [05/Nov/2022 10:52:16] "GET /3 HTTP/1.1" 200 -
+172.17.0.1 - - [05/Nov/2022 10:52:17] "GET /static/css/main.css HTTP/1.1" 304 -
+[2022-11-05 10:52:21,456] INFO in app: The "About" page was accessed
+172.17.0.1 - - [05/Nov/2022 10:52:21] "GET /about HTTP/1.1" 200 -
+172.17.0.1 - - [05/Nov/2022 10:52:21] "GET /static/css/main.css HTTP/1.1" 304 -
+172.17.0.1 - - [05/Nov/2022 10:52:23] "GET /create HTTP/1.1" 200 -
+172.17.0.1 - - [05/Nov/2022 10:52:23] "GET /static/css/main.css HTTP/1.1" 304 -
+[2022-11-05 10:52:43,369] INFO in app: A new article was created with title "Amazing new post"
+172.17.0.1 - - [05/Nov/2022 10:52:43] "POST /create HTTP/1.1" 302 -
+172.17.0.1 - - [05/Nov/2022 10:52:43] "GET / HTTP/1.1" 200 -
+172.17.0.1 - - [05/Nov/2022 10:52:43] "GET /static/css/main.css HTTP/1.1" 304 -
+172.17.0.1 - - [05/Nov/2022 10:52:48] "GET /metrics HTTP/1.1" 200 -
+172.17.0.1 - - [05/Nov/2022 10:52:54] "GET /healthz HTTP/1.1" 200 -
