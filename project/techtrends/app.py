@@ -31,7 +31,7 @@ def get_post(post_id):
 
 
 # Function to get a post count
-def get_post_count():
+def post_count():
     connection = get_db_connection()
     post_count = connection.execute("SELECT COUNT(*) FROM posts").fetchone()
     connection.close()
@@ -39,8 +39,9 @@ def get_post_count():
 
 
 # Function that returns simulated active connections
-def get_simulated_active_db_connections():
+def db_connection_count():
     return random.randint(0, 100)
+
 
 # Define the Flask application
 app = Flask(__name__)
@@ -72,7 +73,7 @@ def post(post_id):
 # Define the About Us page
 @app.route("/about")
 def about():
-    app.logger.info(f"The \"About\" page was accessed")
+    app.logger.info(f'The "About" page was accessed')
     return render_template("about.html")
 
 
@@ -92,7 +93,7 @@ def create():
             )
             connection.commit()
             connection.close()
-            app.logger.info(f"A new article was created with title \"{title}\"")
+            app.logger.info(f'A new article was created with title "{title}"')
             return redirect(url_for("index"))
 
     return render_template("create.html")
@@ -101,14 +102,30 @@ def create():
 # Define a healthcheck endpoint
 @app.route("/healthz")
 def healthz():
+    try:
+        connection = get_db_connection()
+    except:
+        return {"result": "ERROR - unhealthy"}, 500
+
+    try:
+        if (
+            connection.execute(
+                "SELECT name FROM sqlite_master WHERE name='posts'"
+            ).fetchone()
+            is None
+        ):
+            raise ValueError("Posts table does not exist in database")
+    except ValueError:
+        return {"result": "ERROR - unhealthy"}, 500
+
     return {"result": "OK - healthy"}, 200
 
 
 # Define metrics endpoint
 @app.route("/metrics")
 def metrics():
-    db_connection_count = get_simulated_active_db_connections()
-    post_count = get_post_count()
+    db_connection_count = db_connection_count()
+    post_count = post_count()
     metrics = {"db_connection_count": db_connection_count, "post_count": post_count}
     return metrics, 200
 
