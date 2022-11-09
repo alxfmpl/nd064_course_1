@@ -20,7 +20,11 @@ from werkzeug.exceptions import abort
 def get_db_connection():
     connection = sqlite3.connect("database.db")
     connection.row_factory = sqlite3.Row
+    get_db_connection.callcount += 1
     return connection
+
+# Set callcount attribute to database connection function
+get_db_connection.callcount = 0
 
 
 # Function to get a post using its ID
@@ -37,11 +41,6 @@ def post_count():
     post_count = connection.execute("SELECT COUNT(*) FROM posts").fetchone()
     connection.close()
     return post_count[0]
-
-
-# Function that returns simulated active connections
-def db_connection_count():
-    return random.randint(0, 100)
 
 
 # Configure app logging
@@ -134,7 +133,9 @@ def healthz():
 # Define metrics endpoint
 @app.route("/metrics")
 def metrics():
-    metrics = {"db_connection_count": db_connection_count(), "post_count": post_count()}
+    fetch_post_count = post_count()
+    fetch_db_connection_count = get_db_connection.callcount
+    metrics = {"db_connection_count": fetch_db_connection_count, "post_count": fetch_post_count}
     return metrics, 200
 
 
