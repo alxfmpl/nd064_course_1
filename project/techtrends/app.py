@@ -1,6 +1,7 @@
 import logging
 import random
 import sqlite3
+import sys
 
 from flask import (
     Flask,
@@ -43,10 +44,19 @@ def db_connection_count():
     return random.randint(0, 100)
 
 
+# Configure app logging
+handler_stdout = logging.StreamHandler(sys.stdout)
+handler_stderr = logging.StreamHandler(sys.stderr)
+logging.basicConfig(
+    format="[{asctime}] {levelname} in {module}: {message}",
+    style="{",
+    level=logging.DEBUG,
+    handlers=[handler_stdout, handler_stderr],
+)
+
 # Define the Flask application
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "your secret key"
-app.logger.setLevel(logging.DEBUG)
 
 # Define the main route of the web application
 @app.route("/")
@@ -63,7 +73,7 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-        app.logger.info(f"A non-existing articel was accessed with post ID {post_id}")
+        app.logger.info(f"A non-existing article was accessed with post ID {post_id}")
         return render_template("404.html"), 404
     else:
         app.logger.info(f"Article \"{post['title']}\" retrieved!")
@@ -124,9 +134,7 @@ def healthz():
 # Define metrics endpoint
 @app.route("/metrics")
 def metrics():
-    db_connection_count = db_connection_count()
-    post_count = post_count()
-    metrics = {"db_connection_count": db_connection_count, "post_count": post_count}
+    metrics = {"db_connection_count": db_connection_count(), "post_count": post_count()}
     return metrics, 200
 
 
